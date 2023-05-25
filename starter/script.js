@@ -25,12 +25,12 @@ const getCountryData = function (country) {
             <p class="country__row"><span>👫</span>${(
               +data.population / 1000000
             ).toFixed(1)}M people</p>
-            <p class="country__row"><span>🗣️</span>${data.languages.map(
-              el => el.name
-            )}</p>
-            <p class="country__row"><span>💰</span>${
-              data.currencies[0].name
-            }</p>
+            <p class="country__row"><span>🗣️</span>${data.languages
+              .map(el => el.name)
+              .join(', ')}</p>
+            <p class="country__row"><span>💰</span>${data.currencies
+              .map(el => el.name)
+              .join(', ')}</p>
           </div>
         </article>`;
 
@@ -39,4 +39,10 @@ const getCountryData = function (country) {
   });
 };
 
-getCountryData('belgium');
+// getCountryData('belgium');
+getCountryData('portugal');
+// getCountryData('france');
+// getCountryData('spain');
+// getCountryData('canada');
+// getCountryData('cuba');
+// getCountryData('usa');
