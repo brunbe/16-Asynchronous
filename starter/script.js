@@ -32,7 +32,7 @@ const renderError = function (msg) {
 };
 
 btn.addEventListener('click', function () {
-  getCountryData('germany');
+  getCountryData('United States');
 });
 
 ///////////////////////////////////////
@@ -97,8 +97,8 @@ getCountryAndNeighbour('portugal');
 //     });
 // };
 
-const request = fetch('https://restcountries.com/v2/name/portugal');
-console.log(request);
+// const request = fetch('https://restcountries.com/v2/name/portugal');
+// console.log(request);
 //the fetch API inmediately created a promise.
 
 /*
@@ -251,6 +251,7 @@ getCountryData('portugal');
 const getJSON = function (url, errorMsg = 'Something went wrong') {
   return fetch(url).then(response => {
     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+    console.log(response);
     return response.json();
   });
 };
@@ -259,7 +260,8 @@ const getCountryData = function (country) {
   // Country 1
   getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found.')
     .then(data => {
-      // console.log(data[0]);
+      console.log(data);
+      console.log(data[0]);
       renderCountry(data[0]);
       const neighbour = data[0].borders?.[0];
       if (!neighbour) throw new Error('No neighbour found!');
@@ -323,5 +325,41 @@ GOOD LUCK 😀
 */
 
 const whereAmI = function (lat, lng) {
-  const request = a;
+  return fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`)
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`location not found ${response.status}`);
+      // console.log(response);
+      return response.json();
+    })
+    .then(data => {
+      if (data.error)
+        throw new Error(
+          `cover me in flour and eggs and bake me for 14 minutes: ${data.error}`
+        );
+      // console.log(data);
+      // console.log(data.address.country);
+      // console.log(data.address.city);
+      const country = data?.address?.country_code;
+      return fetch(`https://restcountries.com/v2/alpha/${country}`);
+    })
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`);
+      return response.json();
+    })
+    .then(data => {
+      renderCountry(data);
+    })
+    .catch(err => {
+      renderError(`Something went wrong 🤬 ${err.message} 🤬`);
+      console.error(`${err} 🤬🤬`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 };
+
+whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+whereAmI(-33.933, 18.471);
