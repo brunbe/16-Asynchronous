@@ -42,7 +42,7 @@ btn.addEventListener('click', function () {
 //AJAX call country 1;
 const getCountryAndNeighbour = function (country) {
   const request = new XMLHttpRequest();
-  request.open('GET', `https://restcountries.com/v2/name/${country}`);
+  request.open('GET', `https://countries-api-836d.onrender.com/countries/name/${country}`);
   request.send();
 
   request.addEventListener('load', function () {
@@ -57,7 +57,7 @@ const getCountryAndNeighbour = function (country) {
     if (!neighbour) return;
     //AJAX call country 2
     const request2 = new XMLHttpRequest();
-    request2.open('GET', `https://restcountries.com/v2/alpha/${neighbour}`);
+    request2.open('GET', `https://countries-api-836d.onrender.com/countries/alpha/${neighbour}`);
     request2.send();
     request2.addEventListener('load', function () {
       const data2 = JSON.parse(this.responseText);
@@ -80,14 +80,14 @@ getCountryAndNeighbour('portugal');
 //THE MODERN WAY OF CALLING API:
 
 // const request = new XMLHttpRequest();
-// request.open('GET', `https://restcountries.com/v2/name/${country}`);
+// request.open('GET', `https://countries-api-836d.onrender.com/countries/name/${country}`);
 // request.send();
 
-// const request = fetch('https://restcountries.com/v2/name/portugal');
+// const request = fetch('https://countries-api-836d.onrender.com/countries/name/portugal');
 // console.log(request);
 // //the fetch API inmediately created a promise.
 // const getCountryData = function (country) {
-//   fetch(`https://restcountries.com/v2/name/${country}`)
+//   fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
 //     .then(function (response) {
 //       console.log(response);
 //       return response.json();
@@ -97,7 +97,7 @@ getCountryAndNeighbour('portugal');
 //     });
 // };
 
-// const request = fetch('https://restcountries.com/v2/name/portugal');
+// const request = fetch('https://countries-api-836d.onrender.com/countries/name/portugal');
 // console.log(request);
 //the fetch API inmediately created a promise.
 
@@ -126,7 +126,7 @@ start();
 // it receives the promis as an argument, named response in this example, for its callback function. 
 
 // const getCountryData = function (country){
-//   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//   fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
 //   .then(function(response){
 //     console.log(response);
 //   })
@@ -138,7 +138,7 @@ start();
 // which, in its turn must be handeled by a then-method.
 
 // const getCountryData = function (country){
-//   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//   fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
 //   .then(function(response){
 //     // call JSON method on response
 //     return response.json()
@@ -153,7 +153,7 @@ start();
 // simplified version:
 
 const getCountryData = function (country){
-  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+  fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
   .then(response => response.json())
   .then(data => renderCountry(data[0]));
 };
@@ -166,7 +166,7 @@ getCountryData('portugal');
 
 const getCountryData = function (country){
   //COUNTRY 1:
-  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+  fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
   .then(response => response.json())
   .then(data => {
     renderCountry(data[0]);
@@ -174,7 +174,7 @@ const getCountryData = function (country){
   const neighbour = data[0].borders?.[0];
   if (!neighbour) return;
   // COUNTRY 2;
-  return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}`);
+  return fetch(`https://countries-api-836d.onrender.com/countries/name/${neighbour}`);
   })
   //outside the callback function, chain a new then method.
   //if you chain it inside the callback function, we are back to callback-hell.
@@ -210,7 +210,7 @@ getCountryData('portugal');
 
 const getCountryData = function (country){
   //COUNTRY 1:
-  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+  fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
   .then(response => {
   //if response is not ok (ok is a boolean property on on the response object)
   //throw an error, which will result in instant rejection of the promis.  
@@ -224,7 +224,7 @@ const getCountryData = function (country){
   const neighbour = data[0].borders?.[0];
   if (!neighbour) return;
   // COUNTRY 2;
-  return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}`);
+  return fetch(`https://countries-api-836d.onrender.com/countries/name/${neighbour}`);
   })
   //outside the callback function, chain a new then method.
   //if you chain it inside the callback function, we are back to callback-hell.
@@ -245,7 +245,7 @@ const getCountryData = function (country){
 getCountryData('portugal');
 
 */
-
+/*
 //CREATE getJSON HELPER FUNCTION:
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
@@ -258,7 +258,7 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 
 const getCountryData = function (country) {
   // Country 1
-  getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found.')
+  getJShttps://countries-api-836d.onrender.com/countries/name/${country}`, 'Country not found.')
     .then(data => {
       console.log(data);
       console.log(data[0]);
@@ -267,7 +267,7 @@ const getCountryData = function (country) {
       if (!neighbour) throw new Error('No neighbour found!');
       // Country 2
       return getJSON(
-        `https://restcountries.com/v2/alpha/${neighbour}`,
+  https://countries-api-836d.onrender.com/countries/alpha/${neighbour}`,
         'Country not found.'
       );
     })
@@ -280,7 +280,7 @@ const getCountryData = function (country) {
       countriesContainer.style.opacity = 1;
     });
 };
-
+*/
 /*
 Asynchronous JavaScript
 Coding Challenge #1
@@ -324,6 +324,7 @@ GOOD LUCK 😀
 
 */
 
+/*
 const whereAmI = function (lat, lng) {
   return fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`)
     .then(response => {
@@ -341,7 +342,7 @@ const whereAmI = function (lat, lng) {
       // console.log(data.address.country);
       // console.log(data.address.city);
       const country = data?.address?.country_code;
-      return fetch(`https://restcountries.com/v2/alpha/${country}`);
+      return fethttps://countries-api-836d.onrender.com/countries/alpha/${country}`);
     })
     .then(response => {
       if (!response.ok)
@@ -363,3 +364,78 @@ const whereAmI = function (lat, lng) {
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.471);
+*/
+
+/*
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('lottery draw in progresss...');
+  setTimeout(() => {
+    if (Math.random() >= 0.5) {
+      resolve('You won! 🤑');
+    } else {
+      reject('You lost! 💩');
+    }
+  }, 2000);
+});
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+
+//Promisifying setTimeout
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+//ESCAPING CALL BACK HELL
+wait(1)
+  .then(() => {
+    console.log('I waited for 1 seconds');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('I waited for 2 seconds');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('I waited for 3 seconds');
+    return wait(1);
+  })
+  .then(() => console.log('I waited for 4 seconds'));
+
+Promise.resolve('yeeha').then(x => console.log(x)); // then is for resolved promises.
+Promise.reject(new Error('meeha')).catch(x => console.error(x)); // catch is for errors and rejected promises.
+
+//Promisifying the GEOLOCATION API
+//callback
+navigator.geolocation?.getCurrentPosition(
+  position => console.log(position),
+  err => console.error(err)
+);
+
+//promise (returns faster than the callback)
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation?.getCurrentPosition(resolve, reject);
+  });
+};
+
+getPosition().then(pos => console.log(pos));
+*/
+
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+    img.addEventListener('error', function () {});
+  });
+};
+
+createImage('test');
