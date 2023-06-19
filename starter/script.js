@@ -161,29 +161,29 @@ const getCountryData = function (country){
 getCountryData('portugal');
 */
 
-/*
 //CHAINING PROMISES
 
-const getCountryData = function (country){
+const getCountryData = function (country) {
   //COUNTRY 1:
   fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
-  .then(response => response.json())
-  .then(data => {
-    renderCountry(data[0]);
-  //create a new variable for the neighbour country
-  const neighbour = data[0].borders?.[0];
-  if (!neighbour) return;
-  // COUNTRY 2;
-  return fetch(`https://countries-api-836d.onrender.com/countries/name/${neighbour}`);
-  })
-  //outside the callback function, chain a new then method.
-  //if you chain it inside the callback function, we are back to callback-hell.
-  .then(response => response.json())
-  .then(data => renderCountry(data[0], 'neighbour'))
+    .then(response => response.json())
+    .then(data => {
+      renderCountry(data[0]);
+      //create a new variable for the neighbour country
+      const neighbour = data[0].borders?.[0];
+      if (!neighbour) return;
+      // COUNTRY 2;
+      // return fetch(
+      //   `https://countries-api-836d.onrender.com/countries/name/${neighbour}`
+      // );
+    })
+    //outside the callback function, chain a new then method.
+    //if you chain it inside the callback function, we are back to callback-hell.
+    .then(response => response.json())
+    .then(data => renderCountry(data[0], 'neighbour'));
 };
 
 getCountryData('portugal');
-*/
 
 /* 
 //HOW TO HANDLE PROMIS REJECTIONS.
@@ -423,19 +423,19 @@ const getPosition = function () {
 getPosition().then(pos => console.log(pos));
 */
 
-const imgContainer = document.querySelector('.images');
+// const imgContainer = document.querySelector('.images');
 
-const createImage = function (imgPath) {
-  return new Promise(function (resolve, reject) {
-    const img = document.createElement('img');
-    img.src = imgPath;
+// const createImage = function (imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = imgPath;
 
-    img.addEventListener('load', function () {
-      imgContainer.append(img);
-      resolve(img);
-    });
-    img.addEventListener('error', function () {});
-  });
-};
+//     img.addEventListener('load', function () {
+//       imgContainer.append(img);
+//       resolve(img);
+//     });
+//     img.addEventListener('error', function () {});
+//   });
+// };
 
-createImage('test');
+// createImage('test');
