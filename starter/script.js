@@ -1,39 +1,39 @@
 'use strict';
 
-const btn = document.querySelector('.btn-country');
-const countriesContainer = document.querySelector('.countries');
+// const btn = document.querySelector('.btn-country');
+// const countriesContainer = document.querySelector('.countries');
 
-const renderCountry = function (data, className = ' ') {
-  const html = `
-<article class="country ${className}">
-  <img class="country__img" src="${data.flag}" />
-  <div class="country__data">
-    <h3 class="country__name">${data.name}</h3>
-    <h4 class="country__region">${data.region}</h4>
-    <p class="country__row"><span>👫</span>${(
-      +data.population / 1000000
-    ).toFixed(1)}M people</p>
-    <p class="country__row"><span>🗣️</span>${data.languages
-      .map(el => el.name)
-      .join(', ')}</p>
-    <p class="country__row"><span>💰</span>${data.currencies
-      .map(el => el.name)
-      .join(', ')}</p>
-  </div>
-</article>`;
+// const renderCountry = function (data, className = ' ') {
+//   const html = `
+// <article class="country ${className}">
+//   <img class="country__img" src="${data.flag}" />
+//   <div class="country__data">
+//     <h3 class="country__name">${data.name}</h3>
+//     <h4 class="country__region">${data.region}</h4>
+//     <p class="country__row"><span>👫</span>${(
+//       +data.population / 1000000
+//     ).toFixed(1)}M people</p>
+//     <p class="country__row"><span>🗣️</span>${data.languages
+//       .map(el => el.name)
+//       .join(', ')}</p>
+//     <p class="country__row"><span>💰</span>${data.currencies
+//       .map(el => el.name)
+//       .join(', ')}</p>
+//   </div>
+// </article>`;
 
-  countriesContainer.insertAdjacentHTML('beforeend', html);
-  // countriesContainer.style.opacity = '1';
-};
+//   countriesContainer.insertAdjacentHTML('beforeend', html);
+//   // countriesContainer.style.opacity = '1';
+// };
 
-const renderError = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  // countriesContainer.style.opacity = 1;
-};
+// const renderError = function (msg) {
+//   countriesContainer.insertAdjacentText('beforeend', msg);
+//   // countriesContainer.style.opacity = 1;
+// };
 
-btn.addEventListener('click', function () {
-  getCountryData('United States');
-});
+// btn.addEventListener('click', function () {
+//   getCountryData('United States');
+// });
 
 ///////////////////////////////////////
 //THE OLD SCHOOL WAY OF DOING AJAX: XMLHttpRequest-function
@@ -163,27 +163,27 @@ getCountryData('portugal');
 
 //CHAINING PROMISES
 
-const getCountryData = function (country) {
-  //COUNTRY 1:
-  fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
-    .then(response => response.json())
-    .then(data => {
-      renderCountry(data[0]);
-      //create a new variable for the neighbour country
-      const neighbour = data[0].borders?.[0];
-      if (!neighbour) return;
-      // COUNTRY 2;
-      // return fetch(
-      //   `https://countries-api-836d.onrender.com/countries/name/${neighbour}`
-      // );
-    })
-    //outside the callback function, chain a new then method.
-    //if you chain it inside the callback function, we are back to callback-hell.
-    .then(response => response.json())
-    .then(data => renderCountry(data[0], 'neighbour'));
-};
+// const getCountryData = function (country) {
+//   //COUNTRY 1:
+//   fetch(`https://countries-api-836d.onrender.com/countries/name/${country}`)
+//     .then(response => response.json())
+//     .then(data => {
+//       renderCountry(data[0]);
+//       //create a new variable for the neighbour country
+//       const neighbour = data[0].borders?.[0];
+//       if (!neighbour) return;
+//       // COUNTRY 2;
+//       // return fetch(
+//       //   `https://countries-api-836d.onrender.com/countries/name/${neighbour}`
+//       // );
+//     })
+//     //outside the callback function, chain a new then method.
+//     //if you chain it inside the callback function, we are back to callback-hell.
+//     .then(response => response.json())
+//     .then(data => renderCountry(data[0], 'neighbour'));
+// };
 
-getCountryData('portugal');
+// getCountryData('portugal');
 
 /* 
 //HOW TO HANDLE PROMIS REJECTIONS.
@@ -379,7 +379,7 @@ const lotteryPromise = new Promise(function (resolve, reject) {
 });
 
 lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
-
+*/
 //Promisifying setTimeout
 const wait = function (seconds) {
   return new Promise(function (resolve) {
@@ -387,6 +387,7 @@ const wait = function (seconds) {
   });
 };
 
+/*
 //ESCAPING CALL BACK HELL
 wait(1)
   .then(() => {
@@ -423,19 +424,36 @@ const getPosition = function () {
 getPosition().then(pos => console.log(pos));
 */
 
-// const imgContainer = document.querySelector('.images');
+const imgContainer = document.querySelector('.images');
 
-// const createImage = function (imgPath) {
-//   return new Promise(function (resolve, reject) {
-//     const img = document.createElement('img');
-//     img.src = imgPath;
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+    img.addEventListener('load', () => {
+      imgContainer.appendChild(img);
+      resolve(img);
+    });
+    img.addEventListener('error', err =>
+      reject(new Error(`something went wrong: ${err.message}`))
+    );
+  });
+};
 
-//     img.addEventListener('load', function () {
-//       imgContainer.append(img);
-//       resolve(img);
-//     });
-//     img.addEventListener('error', function () {});
-//   });
-// };
+let currentImage;
 
-// createImage('test');
+createImage('../img/img-1.jpg')
+  .then(img => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = 'none';
+    return createImage('../img/img-2.jpg');
+  })
+  .then(img => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => (currentImage.style.display = 'none'))
+  .catch(err => console.error(err));
