@@ -1,39 +1,39 @@
 'use strict';
 
-// const btn = document.querySelector('.btn-country');
-// const countriesContainer = document.querySelector('.countries');
+const btn = document.querySelector('.btn-country');
+const countriesContainer = document.querySelector('.countries');
 
-// const renderCountry = function (data, className = ' ') {
-//   const html = `
-// <article class="country ${className}">
-//   <img class="country__img" src="${data.flag}" />
-//   <div class="country__data">
-//     <h3 class="country__name">${data.name}</h3>
-//     <h4 class="country__region">${data.region}</h4>
-//     <p class="country__row"><span>👫</span>${(
-//       +data.population / 1000000
-//     ).toFixed(1)}M people</p>
-//     <p class="country__row"><span>🗣️</span>${data.languages
-//       .map(el => el.name)
-//       .join(', ')}</p>
-//     <p class="country__row"><span>💰</span>${data.currencies
-//       .map(el => el.name)
-//       .join(', ')}</p>
-//   </div>
-// </article>`;
+const renderCountry = function (data, className = ' ') {
+  const html = `
+<article class="country ${className}">
+  <img class="country__img" src="${data.flag}" />
+  <div class="country__data">
+    <h3 class="country__name">${data.name}</h3>
+    <h4 class="country__region">${data.region}</h4>
+    <p class="country__row"><span>👫</span>${(
+      +data.population / 1000000
+    ).toFixed(1)}M people</p>
+    <p class="country__row"><span>🗣️</span>${data.languages
+      .map(el => el.name)
+      .join(', ')}</p>
+    <p class="country__row"><span>💰</span>${data.currencies
+      .map(el => el.name)
+      .join(', ')}</p>
+  </div>
+</article>`;
 
-//   countriesContainer.insertAdjacentHTML('beforeend', html);
-//   // countriesContainer.style.opacity = '1';
-// };
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = '1';
+};
 
-// const renderError = function (msg) {
-//   countriesContainer.insertAdjacentText('beforeend', msg);
-//   // countriesContainer.style.opacity = 1;
-// };
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
 
-// btn.addEventListener('click', function () {
-//   getCountryData('United States');
-// });
+btn.addEventListener('click', function () {
+  getCountryData('United States');
+});
 
 ///////////////////////////////////////
 //THE OLD SCHOOL WAY OF DOING AJAX: XMLHttpRequest-function
@@ -342,7 +342,7 @@ const whereAmI = function (lat, lng) {
       // console.log(data.address.country);
       // console.log(data.address.city);
       const country = data?.address?.country_code;
-      return fethttps://countries-api-836d.onrender.com/countries/alpha/${country}`);
+      return fetch (`https://countries-api-836d.onrender.com/countries/alpha/${country}`);
     })
     .then(response => {
       if (!response.ok)
@@ -424,6 +424,8 @@ const getPosition = function () {
 getPosition().then(pos => console.log(pos));
 */
 
+/* CODING CHALLENGE 2
+
 const imgContainer = document.querySelector('.images');
 
 const createImage = function (imgPath) {
@@ -457,3 +459,259 @@ createImage('../img/img-1.jpg')
   })
   .then(() => (currentImage.style.display = 'none'))
   .catch(err => console.error(err));
+*/
+
+/*
+// ASYNC / AWAIT
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation?.getCurrentPosition(resolve, reject);
+  });
+};
+
+//by adding async the function will run asynchronously and return a promise at the end.
+const whereAmI = async function (country) {
+  try {
+    //see further for explanation.
+
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+
+    //Reverse geocoding
+    const resGeo = await fetch(
+      `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting location data.');
+    const dataGeo = await resGeo.json();
+
+    //inside an async function we can have 1 or more await statements.
+    //the await keyword lets the code run in the background.
+    const res = await fetch(
+      `https://countries-api-836d.onrender.com/countries/name/${dataGeo.address.country}`
+    );
+    if (!res.ok) throw new Error('Problem getting country.');
+    const data = await res.json();
+    renderCountry(data[0]);
+
+    return `You are in ${dataGeo.address.city}, ${dataGeo.address.country}`;
+  } catch (err) {
+    console.error(`${err} 🤬`);
+    renderError(`🤬 ${err.message}`);
+
+    //Reject promise returned from async function:
+    throw err;
+  }
+  // //above is exactly the same as following:
+  
+  // fetch(
+  //   `https://countries-api-836d.onrender.com/countries/name/${dataGeo.address.country}`
+  // )
+  //   .then(res => {
+  //     if(!res.ok) throw new Error('Problem getting country.');
+  //     console.log(res);
+  //     return res.json();
+  //   })
+  //   .then(data => renderCountry(data[0]))
+  //   .catch( err => {
+  //     console.error(`${err} 🤬`); 
+  //     renderError(`🤬 ${err.message}`);
+  //   });
+};
+
+//executing our function:
+console.log(`1: will get location`);
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message}`))
+//   .finally(() => console.log('3: Finished getting location'));
+
+//rewriting without .then() and using async/await:
+(async () => {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message}`);
+  }
+  console.log('3: Finished getting location');
+})();
+
+//HANDLING ERRORS WITH TRY...CATCH
+//we can wrap all our code in a try block
+try {
+  let y = 1;
+  const x = 2;
+  y = 3;
+} catch (err) {
+  console.error(err);
+}
+//the catch block has access to the error that occured in the try block.
+
+//RUNNING PROMISES CODE IN PARALLEL:
+//helper function:
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+    // console.log(response);
+    return response.json();
+  });
+};
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(
+    //   `https://countries-api-836d.onrender.com/countries/name/${c1}`
+    // );
+    // const [data2] = await getJSON(
+    //   `https://countries-api-836d.onrender.com/countries/name/${c2}`
+    // );
+    // const [data3] = await getJSON(
+    //   `https://countries-api-836d.onrender.com/countries/name/${c3}`
+    // );
+
+    //Promise.all() takes an array of promises and will return an new promise.
+    const dataAll = await Promise.all([
+      getJSON(`https://countries-api-836d.onrender.com/countries/name/${c1}`),
+      getJSON(`https://countries-api-836d.onrender.com/countries/name/${c2}`),
+      getJSON(`https://countries-api-836d.onrender.com/countries/name/${c3}`),
+    ]);
+    //Promise.all() short-circuits if 1 promise rejects.
+
+    // console.log([data1.capital, data2.capital, data3.capital]);
+    console.log(dataAll.map(d => d[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('mozambique', 'cameroon', 'tanzania');
+
+//always run async function in parallel when possible.
+
+//3 PROMISE COMBINATORS: RACE, ALLSETTLED AND ANY;
+
+//Promice.race
+//the first function that SETTLES wins the race.
+
+(async () => {
+  const res = await Promise.race([
+    getJSON(`https://countries-api-836d.onrender.com/countries/name/italy`),
+    getJSON(`https://countries-api-836d.onrender.com/countries/name/gabon`),
+    getJSON(`https://countries-api-836d.onrender.com/countries/name/thailand`),
+  ]);
+  console.log(res[0]);
+})();
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long'));
+    }, sec * 1000);
+  });
+};
+
+//real world example: reject promise if the request takes more than 5 seconds
+Promise.race([
+  getJSON(`https://countries-api-836d.onrender.com/countries/name/thailand`),
+  timeout(5),
+])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+
+//Promise.allSettled
+//takes an array of promises and returns an array of settled promises. It does not short circuit, unlike promise.all.
+
+//will give array
+Promise.allSettled([
+  Promise.resolve('success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+//will give error
+Promise.all([
+  Promise.resolve('success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+//Promise.any
+//returns the first resolved promise, ignoring rejected promises.
+//unlike promise.race, which will return the first settled promise, either resolved or rejected.
+Promise.any([
+  Promise.resolve('success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+*/
+
+//CODING CHALLENGE 3
+
+//PART 1:
+
+// const imgContainer = document.querySelector('.images');
+
+// const createImage = function (imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = imgPath;
+//     img.addEventListener('load', () => {
+//       imgContainer.appendChild(img);
+//       resolve(img);
+//     });
+//     img.addEventListener('error', err =>
+//       reject(new Error(`something went wrong: ${err.message}`))
+//     );
+//   });
+// };
+
+const imageContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+    img.addEventListener('load', () => {
+      imageContainer.appendChild(img);
+      resolve(img);
+    });
+    img.addEventListener('error', err => reject(new Error(err.message)));
+  });
+};
+
+const loadNpause = async function () {
+  try {
+    let img = await createImage('../img/img-1.jpg');
+    await wait(2);
+    img.style.display = 'none';
+    img = await createImage('../img/img-2.jpg');
+    img.style.display = 'block';
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// loadNpause();
+
+//PART 2:
+const imgArr = ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg'];
+
+const loadAll = async function (args) {
+  try {
+    const imgs = args.map(async el => await createImage(el));
+    const imgsAll = await Promise.all(imgs);
+    imgsAll.forEach(img => img.classList.add('parallel'));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll(imgArr);
