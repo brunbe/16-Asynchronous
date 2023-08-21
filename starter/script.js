@@ -322,21 +322,22 @@ createImage(`../img/img-1.jpg`)
 // ASYNC AWAIT - A DIFFERENT WAY OF CONSUMING PROMISES
 const whereAmIAsync = async function () {
   try {
+    //reverse geocoding
     const pos = await getPosition();
     const { latitude: lat, longitude: lng } = pos.coords;
-    const geo = await fetch(
+    const resGeo = await fetch(
       `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
     );
-    const dataGeo = await geo.json();
-    console.log(dataGeo);
-    // const country =
-
+    if (!resGeo.ok) throw new Error('Problem getting location!');
+    const dataGeo = await resGeo.json();
+    // Country data
     const res = await fetch(
       `https://restcountries.com/v3.1/name/${dataGeo?.address?.country}`
     );
+    if (!res.ok) throw new Error('No data on country!');
     const data = await res.json();
-    console.log(data);
     renderCountry(data[0]);
+    return `you are in ${dataGeo.address.city}`;
   } catch (err) {
     console.error(`Something went wrong: ${err}`);
     renderError(`Something went wrong: ${err.message}`);
@@ -345,5 +346,6 @@ const whereAmIAsync = async function () {
   }
 };
 
-whereAmIAsync();
-console.log('FIRST'); //will be printed first
+console.log('1ST');
+whereAmIAsync().then(city => console.log(city));
+console.log('3RD');
