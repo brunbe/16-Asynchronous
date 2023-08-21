@@ -209,3 +209,141 @@ const whereAmI = function (lat, lng) {
 
 whereAmI(52.508, 13.381);
 */
+
+/*
+console.log('Test start'); //1
+setTimeout(() => console.log(`0 seconds`), 0); //4
+Promise.resolve('resolved promis 1').then(response => console.log(response)); //3
+console.log('Test end'); //2
+
+
+// Fristly, the execution conttext is created and all the toplevel code is executed.
+// The 1st console.log is printed to the console; the callback function of setTimeout is added to the callback queue;
+// The callback function of the Promise is added to the microservice queue and the last console.log is printed to the console.
+// Now the execution context is empty and the eventloop will check the microservice queue and execute all functions there.
+// Next, the eventloop will move on to the callback queue and exucte all callbacks.
+// Therefor, the resolved promise is printed before the callback function of setTimeout, eventhough timer was set to 0 seconds.
+
+
+console.log('Test start'); //1
+setTimeout(() => console.log(`0 seconds`), 0); //5
+Promise.resolve('resolved promise 1').then(response => console.log(response)); //3
+Promise.resolve('resolved promise 2').then(response => {
+  for (let i = 0; i < 1000000000; i++);
+  console.log(response);
+}); //4
+console.log('Test end'); //2
+
+// the 2nd promise takes a long time to execute. This blocks the execution of the the callback queue.
+
+*/
+
+/*
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('draw in progress...');
+  setTimeout(function () {
+    if (Math.random() >= 0.5) {
+      resolve('you win! 💰');
+    } else {
+      reject(new Error('you loose! 💩'));
+    }
+  }, 2000);
+});
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(() => resolve(`I waited ${seconds} seconds`), seconds * 1000);
+  });
+};
+
+wait(3)
+  .then(res => {
+    console.log(res);
+    return wait(2);
+  })
+  .then(res => console.log(res));
+
+*/
+
+//  PROMISIFYING THE GEOLOCATOR API:
+// navigator.geolocation.getCurrentPosition(
+//   position => console.log(position),
+//   err => console.error(err)
+// );
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(new Error(err))
+    // );
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+getPosition().then(pos => console.log(pos));
+
+/*
+// CODING CHALLENGE 2
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+    img.addEventListener('load', () => {
+      document.querySelector('.images').appendChild(img);
+      resolve(img);
+    });
+    img.addEventListener('error', err => reject(new Error(err)));
+  });
+};
+
+let currentImage;
+
+createImage(`../img/img-1.jpg`)
+  .then(img => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => {
+    currentImage.style.display = 'none';
+    return createImage(`../img/img-2.jpg`);
+  })
+  .then(img => {
+    currentImage = img;
+    return wait(2);
+  })
+  .then(() => (currentImage.style.display = 'none'))
+  .catch(err => console.error(err));
+*/
+
+// ASYNC AWAIT - A DIFFERENT WAY OF CONSUMING PROMISES
+const whereAmIAsync = async function () {
+  try {
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    const geo = await fetch(
+      `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
+    );
+    const dataGeo = await geo.json();
+    console.log(dataGeo);
+    // const country =
+
+    const res = await fetch(
+      `https://restcountries.com/v3.1/name/${dataGeo?.address?.country}`
+    );
+    const data = await res.json();
+    console.log(data);
+    renderCountry(data[0]);
+  } catch (err) {
+    console.error(`Something went wrong: ${err}`);
+    renderError(`Something went wrong: ${err.message}`);
+  } finally {
+    countriesContainer.style.opacity = 1;
+  }
+};
+
+whereAmIAsync();
+console.log('FIRST'); //will be printed first
