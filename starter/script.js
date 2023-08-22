@@ -283,7 +283,7 @@ const getPosition = function () {
   });
 };
 
-getPosition().then(pos => console.log(pos));
+// getPosition().then(pos => console.log(pos));
 
 /*
 // CODING CHALLENGE 2
@@ -347,5 +347,81 @@ const whereAmIAsync = async function () {
 };
 
 console.log('1ST');
-whereAmIAsync().then(city => console.log(city));
+whereAmIAsync().then(rtrn => console.log(rtrn));
 console.log('3RD');
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // // running in sequence:
+    // const [dataC1] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${c1}`,
+    //   'Country not found:'
+    // );
+    // const [dataC2] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${c2}`,
+    //   'Country not found:'
+    // );
+    // const [dataC3] = await getJSON(
+    //   `https://restcountries.com/v3.1/name/${c3}`,
+    //   'Country not found:'
+    // );
+    // console.log(dataC1.capital, dataC2.capital, dataC3.capital);
+
+    // running in parallel:
+    const data = await Promise.all([
+      getJSON(
+        `https://restcountries.com/v3.1/name/${c1}`,
+        'Country not found:'
+      ),
+      getJSON(
+        `https://restcountries.com/v3.1/name/${c2}`,
+        'Country not found:'
+      ),
+      getJSON(
+        `https://restcountries.com/v3.1/name/${c3}`,
+        'Country not found:'
+      ),
+    ]);
+    console.log(data.map(d => d[0].capital[0]));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('Tanzania', 'Mozambique', 'Kenya');
+
+//return array if all resolved, shortcircuits at rejected
+Promise.all([
+  Promise.resolve('.all 1: succes'),
+  Promise.reject('.all 2: ERROR'),
+  Promise.resolve('.all 3: succes'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+//frist past the post, resolved or rejected
+Promise.race([
+  Promise.resolve('.race 1: succes'),
+  Promise.reject('.race 2: ERROR'),
+  Promise.resolve('.race 3: succes'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+//return array of resolved and rejected
+Promise.allSettled([
+  Promise.resolve('.allSettled 1: succes'),
+  Promise.reject('.allSettled 2: ERROR'),
+  Promise.resolve('.allSettled 3: succes'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+//first passed the post, only resolved, rejected are ignored
+Promise.any([
+  Promise.reject('.any 1: ERROR'),
+  Promise.resolve('.any 2: succes'),
+  Promise.resolve('.any 3: succes'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
