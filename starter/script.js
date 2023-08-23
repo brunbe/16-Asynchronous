@@ -319,109 +319,220 @@ createImage(`../img/img-1.jpg`)
   .catch(err => console.error(err));
 */
 
-// ASYNC AWAIT - A DIFFERENT WAY OF CONSUMING PROMISES
-const whereAmIAsync = async function () {
+// // ASYNC AWAIT - A DIFFERENT WAY OF CONSUMING PROMISES
+// const whereAmIAsync = async function () {
+//   try {
+//     //reverse geocoding
+//     const pos = await getPosition();
+//     const { latitude: lat, longitude: lng } = pos.coords;
+//     const resGeo = await fetch(
+//       `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
+//     );
+//     if (!resGeo.ok) throw new Error('Problem getting location!');
+//     const dataGeo = await resGeo.json();
+//     // Country data
+//     const res = await fetch(
+//       `https://restcountries.com/v3.1/name/${dataGeo?.address?.country}`
+//     );
+//     if (!res.ok) throw new Error('No data on country!');
+//     const data = await res.json();
+//     renderCountry(data[0]);
+//     return `you are in ${dataGeo.address.city}`;
+//   } catch (err) {
+//     console.error(`Something went wrong: ${err}`);
+//     renderError(`Something went wrong: ${err.message}`);
+//   } finally {
+//     countriesContainer.style.opacity = 1;
+//   }
+// };
+
+// console.log('1ST');
+// whereAmIAsync().then(rtrn => console.log(rtrn));
+// console.log('3RD');
+
+// const get3Countries = async function (c1, c2, c3) {
+//   try {
+//     // // running in sequence:
+//     // const [dataC1] = await getJSON(
+//     //   `https://restcountries.com/v3.1/name/${c1}`,
+//     //   'Country not found:'
+//     // );
+//     // const [dataC2] = await getJSON(
+//     //   `https://restcountries.com/v3.1/name/${c2}`,
+//     //   'Country not found:'
+//     // );
+//     // const [dataC3] = await getJSON(
+//     //   `https://restcountries.com/v3.1/name/${c3}`,
+//     //   'Country not found:'
+//     // );
+//     // console.log(dataC1.capital, dataC2.capital, dataC3.capital);
+
+//     // running in parallel:
+//     const data = await Promise.all([
+//       getJSON(
+//         `https://restcountries.com/v3.1/name/${c1}`,
+//         'Country not found:'
+//       ),
+//       getJSON(
+//         `https://restcountries.com/v3.1/name/${c2}`,
+//         'Country not found:'
+//       ),
+//       getJSON(
+//         `https://restcountries.com/v3.1/name/${c3}`,
+//         'Country not found:'
+//       ),
+//     ]);
+//     console.log(data.map(d => d[0].capital[0]));
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+// get3Countries('Tanzania', 'Mozambique', 'Kenya');
+
+// //return array if all resolved, shortcircuits at rejected
+// Promise.all([
+//   Promise.resolve('.all 1: succes'),
+//   Promise.reject('.all 2: ERROR'),
+//   Promise.resolve('.all 3: succes'),
+// ])
+//   .then(res => console.log(res))
+//   .catch(err => console.error(err));
+
+// //frist past the post, resolved or rejected
+// Promise.race([
+//   Promise.resolve('.race 1: succes'),
+//   Promise.reject('.race 2: ERROR'),
+//   Promise.resolve('.race 3: succes'),
+// ])
+//   .then(res => console.log(res))
+//   .catch(err => console.error(err));
+
+// //return array of resolved and rejected
+// Promise.allSettled([
+//   Promise.resolve('.allSettled 1: succes'),
+//   Promise.reject('.allSettled 2: ERROR'),
+//   Promise.resolve('.allSettled 3: succes'),
+// ])
+//   .then(res => console.log(res))
+//   .catch(err => console.error(err));
+
+// //first passed the post, only resolved, rejected are ignored
+// Promise.any([
+//   Promise.reject('.any 1: ERROR'),
+//   Promise.resolve('.any 2: succes'),
+//   Promise.resolve('.any 3: succes'),
+// ])
+//   .then(res => console.log(res))
+//   .catch(err => console.error(err));
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Build the image loading functionality that I just showed you on the screen.
+
+Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+PART 1
+1. Create a function 'createImage' which receives imgPath as an input. 
+This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. 
+When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. 
+The fulfilled value should be the image element itself. 
+In case there is an error loading the image ('error' event), reject the promise.
+
+If this part is too tricky for you, just watch the first part of the solution.
+
+PART 2
+2. Comsume the promise using .then and also add an error handler;
+3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+5. After the second image has loaded, pause execution for 2 seconds again;
+6. After the 2 seconds have passed, hide the current image.
+
+TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+GOOD LUCK 😀
+*/
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+PART 2
+1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+3. Check out the 'imgs' array in the console! Is it like you expected?
+4. Use a promise combinator function to actually get the images from the array 😉
+5. Add the 'parallel' class to all the images (it has some CSS styles).
+
+TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+
+const createImage = function (path) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = path;
+    img.addEventListener('load', () => {
+      document.querySelector('.images').appendChild(img);
+      resolve(img);
+    });
+    img.addEventListener('error', () =>
+      reject(new Error('could not load image'))
+    );
+  });
+};
+
+const wait2 = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(() => {
+      resolve(`waited ${seconds} seconds`);
+    }, seconds * 1000);
+  });
+};
+
+const loadNpause = async function () {
   try {
-    //reverse geocoding
-    const pos = await getPosition();
-    const { latitude: lat, longitude: lng } = pos.coords;
-    const resGeo = await fetch(
-      `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}`
-    );
-    if (!resGeo.ok) throw new Error('Problem getting location!');
-    const dataGeo = await resGeo.json();
-    // Country data
-    const res = await fetch(
-      `https://restcountries.com/v3.1/name/${dataGeo?.address?.country}`
-    );
-    if (!res.ok) throw new Error('No data on country!');
-    const data = await res.json();
-    renderCountry(data[0]);
-    return `you are in ${dataGeo.address.city}`;
+    let img = await createImage('img/img-1.jpg');
+    await wait2(2);
+    img.style.display = 'none';
+    img = await createImage('img/img-2.jpg');
+    await wait2(2);
+    img.style.display = 'none';
   } catch (err) {
-    console.error(`Something went wrong: ${err}`);
-    renderError(`Something went wrong: ${err.message}`);
-  } finally {
-    countriesContainer.style.opacity = 1;
+    console.error(err.message);
   }
 };
 
-console.log('1ST');
-whereAmIAsync().then(rtrn => console.log(rtrn));
-console.log('3RD');
-
-const get3Countries = async function (c1, c2, c3) {
+const loadAll = async function (imgArr) {
   try {
-    // // running in sequence:
-    // const [dataC1] = await getJSON(
-    //   `https://restcountries.com/v3.1/name/${c1}`,
-    //   'Country not found:'
-    // );
-    // const [dataC2] = await getJSON(
-    //   `https://restcountries.com/v3.1/name/${c2}`,
-    //   'Country not found:'
-    // );
-    // const [dataC3] = await getJSON(
-    //   `https://restcountries.com/v3.1/name/${c3}`,
-    //   'Country not found:'
-    // );
-    // console.log(dataC1.capital, dataC2.capital, dataC3.capital);
-
-    // running in parallel:
-    const data = await Promise.all([
-      getJSON(
-        `https://restcountries.com/v3.1/name/${c1}`,
-        'Country not found:'
-      ),
-      getJSON(
-        `https://restcountries.com/v3.1/name/${c2}`,
-        'Country not found:'
-      ),
-      getJSON(
-        `https://restcountries.com/v3.1/name/${c3}`,
-        'Country not found:'
-      ),
-    ]);
-    console.log(data.map(d => d[0].capital[0]));
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log();
+    const imgs2 = await Promise.all(imgs);
+    imgs2.forEach(el => el.classList.add('parallel'));
+    console.log(imgs2);
   } catch (err) {
     console.error(err);
   }
 };
 
-get3Countries('Tanzania', 'Mozambique', 'Kenya');
+const loadAll2 = async function (imgArr) {
+  try {
+    const img = imgArr.map(img => createImage(img));
+    console.log(img);
+    const imgs = await Promise.all(img);
+    console.log(imgs);
+    imgs.forEach(el => el.classList.add('parallel'));
+    console.log(imgs);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-//return array if all resolved, shortcircuits at rejected
-Promise.all([
-  Promise.resolve('.all 1: succes'),
-  Promise.reject('.all 2: ERROR'),
-  Promise.resolve('.all 3: succes'),
-])
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
-
-//frist past the post, resolved or rejected
-Promise.race([
-  Promise.resolve('.race 1: succes'),
-  Promise.reject('.race 2: ERROR'),
-  Promise.resolve('.race 3: succes'),
-])
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
-
-//return array of resolved and rejected
-Promise.allSettled([
-  Promise.resolve('.allSettled 1: succes'),
-  Promise.reject('.allSettled 2: ERROR'),
-  Promise.resolve('.allSettled 3: succes'),
-])
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
-
-//first passed the post, only resolved, rejected are ignored
-Promise.any([
-  Promise.reject('.any 1: ERROR'),
-  Promise.resolve('.any 2: succes'),
-  Promise.resolve('.any 3: succes'),
-])
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
+loadAll2(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
